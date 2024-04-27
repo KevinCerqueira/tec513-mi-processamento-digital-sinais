@@ -192,7 +192,7 @@ ylabel('Amplitude');
 hold off;
 figure;
 % Plot do sinal reconstruido
-subplot(4, 2, 1);
+subplot(2, 1, 1);
 plot(t_continuo, sinal_reconstruido, 'b');
 title('Sinal Reconstruído');
 xlim([0.04, 0.13]); % Limita o eixo X de 0.04 a 0.13
@@ -200,8 +200,8 @@ xlabel('Tempo');
 ylabel('Amplitude');
 
 % Plot do filtro PB ideal
-subplot(4, 2, 3);
-stem(frequencias_shifted_sinal_reconstruido, magnitude_fft_shifted_sinal_reconstruido,'.');
+subplot(2, 1, 2);
+plot(frequencias_shifted_sinal_reconstruido, magnitude_fft_shifted_sinal_reconstruido,'-');
 title('Espectro do sinal reconstruido');
 xlim([-200, 200]); % Limita o eixo X de -200 a 200
 xlabel('Frequência (Hz)');
