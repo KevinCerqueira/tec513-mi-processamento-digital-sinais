@@ -29,12 +29,12 @@ h = min(image.shape[0] - y, h + 2 * margin)
 # Salvar as coordenadas do rosto para processamento no Octave
 np.savetxt('face.txt', np.array([x, y, w, h]), fmt='%d')
 
-# # Chamar script Octave para processar a imagem
-# subprocess.run(['octave', '--no-gui', '--quiet', 'process_image.m'])
+# Chamar script Octave para processar a imagem
+subprocess.run(['octave', '--no-gui', '--quiet', 'process_image.m'])
 
-# # Verificar se o arquivo de saída foi gerado
-# if not os.path.exists('imagem_desfocada.png'):
-#     print('Erro: A imagem processada não foi gerada.')
-#     exit()
-# else:
-#     print('\n Imagem desfocada com sucesso!')
+# Verificar se o arquivo de saída foi gerado
+if not os.path.exists('imagem_desfocada.png'):
+    print('Erro: A imagem processada não foi gerada.')
+    exit()
+else:
+    print('\n Imagem desfocada com sucesso!')

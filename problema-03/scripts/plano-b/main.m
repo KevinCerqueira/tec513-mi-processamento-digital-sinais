@@ -1,40 +1,37 @@
-pkg load image;
+pkg load image
 
-% Carregar a imagem
-img = imread('lena.tiff'); % Substitua 'imagem.jpg' pelo nome do arquivo da sua imagem
-
-% Verificar se a imagem é RGB e converter para tons de cinza se necessário
+img = imread('lena.tiff');
 if size(img, 3) == 3
-    img_gray = rgb2gray(img);
+    gray_image = rgb2gray(img);
 else
-    img_gray = img;
+    gray_image = img;
 end
 
-% Aplicar o operador de Sobel manualmente para calcular as bordas
-sobel_x = [-1 0 1; -2 0 2; -1 0 1];  % Kernel Sobel para detecção de bordas horizontais
-sobel_y = [-1 -2 -1; 0 0 0; 1 2 1];  % Kernel Sobel para detecção de bordas verticais
+edges = edge(gray_image, 'sobel');
 
-Gx = conv2(double(img_gray), 2*sobel_x, 'same');
-Gy = conv2(double(img_gray), 2*sobel_y, 'same');
+internal_mask = imcomplement(edges);
+internal_mask = imfill(internal_mask, 'holes');
 
-% Magnitude do gradiente
-magnitude = sqrt(Gx.^2 + Gy.^2);
+% Criar o elemento estruturante manualmente
+radius = 15;
+se = getnhood(strel('square', 2*radius+1 ));
+se = imrotate(se, 90);
 
-% Aplicar limiarização para destacar bordas significativas
-limiar = 350; % Ajuste o limiar conforme necessário
-bordas = magnitude > limiar;
+% Aplicar dilatação somente nas áreas internas
+dilated_image = gray_image;
+dilated_image(internal_mask) = imopen(gray_image(internal_mask), se);
 
-% Mostrar a imagem das bordas detectadas
+%subplot(2,2,3);
+%imshow(edges), title('Bordas detectadas');
+
+% Aplicar desfoque nas áreas internas
+h = fspecial('gaussian', [15 15], 25);  % Ajuste o tamanho e o desvio padrão conforme necessário
+blurred_image = dilated_image;
+blurred_image(internal_mask) = imfilter(dilated_image(internal_mask), h, 'replicate');
+
+% Exibir a imagem desfocada
 figure;
-subplot(1, 3, 1);
-imshow(img);
-title('Imagem original');
-
-subplot(1, 3, 2);
-imshow(bordas);
-title('Bordas detectadas com limiarização (Sobel)');
-
-edges = edge(img_gray, 'canny');
-subplot(1,3,3);
-imshow(edges);
-title('Bordas detectadas com Canny');
+%subplot(2,2,1);
+%imshow(gray_image), title('Imagem em tons de cinza');
+%subplot(2,2,2);
+imshow(blurred_image), title('Imagem com áreas internas desfocadas');
